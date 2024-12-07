@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7.1.0
+        uses: super-linter/super-linter/slim@v7.2.0
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
@@ -67,12 +67,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.27.4
+        uses: github/codeql-action/init@v3.27.6
         with:
           languages: go
           queries: security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.27.4
+        uses: github/codeql-action/analyze@v3.27.6
 
   check-go-format:
     name: Check Go Format
