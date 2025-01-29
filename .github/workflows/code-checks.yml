@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7.1.0
+        uses: super-linter/super-linter/slim@v7.2.1
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
@@ -77,12 +77,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.27.4
+        uses: github/codeql-action/init@v3.28.6
         with:
           languages: go
           queries: security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.27.4
+        uses: github/codeql-action/analyze@v3.28.6
 
   check-go-format:
     name: Check Go Format
@@ -151,7 +151,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v4.2.0
+        uses: astral-sh/setup-uv@v5.2.1
         with:
           version: "latest"
       - name: Run zizmor 🌈
@@ -159,7 +159,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3.27.9
+        uses: github/codeql-action/upload-sarif@v3.28.6
         with:
           sarif_file: results.sarif
           category: zizmor
@@ -175,3 +175,8 @@ jobs:
           persist-credentials: false
       - name: Run Local Action
         uses: ./.github/actions/local
+        with:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_PR_NUMBER: ${{ github.event.number }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
