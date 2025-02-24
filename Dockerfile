@@ -1,6 +1,6 @@
 #checkov:skip=CKV_DOCKER_2
 #checkov:skip=CKV_DOCKER_3
-FROM golang:1.22.6
+FROM golang:1.24.0
 
 ENV GO111MODULE="on"
 
