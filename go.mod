@@ -1,6 +1,6 @@
 module github.com/JackPlowman/github-pr-analyser
 
-go 1.22.6
+go 1.24.0
 
 require (
 	github.com/sirupsen/logrus v1.9.3
