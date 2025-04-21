@@ -30,7 +30,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: .github/super-linter-configs
+          LINTER_RULES_PATH: .github/super-linter-configurations
           YAML_ERROR_ON_WARNING: true
           EDITORCONFIG_FILE_NAME: .editorconfig-checker.json
 
@@ -61,7 +61,7 @@ jobs:
         uses: UmbrellaDocs/action-linkspector@v1.3.1
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          config_file: .github/other-configs/.linkspector.yml
+          config_file: .github/other-configurations/.linkspector.yml
           reporter: github-pr-review
           fail_on_error: true
           filter_mode: nofilter
