@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - .github/other-configs/labels.yml
+      - .github/other-configurations/labels.yml
 
 permissions:
   contents: read
@@ -27,4 +27,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          manifest: .github/other-configs/labels.yml
+          manifest: .github/other-configurations/labels.yml
