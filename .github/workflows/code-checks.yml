@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7.3.0
+        uses: super-linter/super-linter/slim@4e8a7c2bf106c4c766c816b35ec612638dc9b6b2 # v7.3.0
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
@@ -44,7 +44,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
       - name: Check Justfile Format
         run: just format-check
 
@@ -58,7 +58,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Check Markdown links
-        uses: UmbrellaDocs/action-linkspector@v1.3.1
+        uses: UmbrellaDocs/action-linkspector@a0567ce1c7c13de4a2358587492ed43cab5d0102 # v1.3.4
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           config_file: .github/other-configurations/.linkspector.yml
@@ -104,7 +104,7 @@ jobs:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
       - name: Set up Just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
       - name: Check Go Format
         run: just go-format
 
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Go Vulnerability Check
-        uses: golang/govulncheck-action@v1.0.4
+        uses: golang/govulncheck-action@b625fbe08f3bccbe446d94fbf87fcc875a4f50ee # v1.0.4
         with:
           go-version-file: ./go.mod
           work-dir: .
@@ -133,11 +133,11 @@ jobs:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
       - name: Set up Just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
       - name: Run Tests
         run: just test
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        uses: SonarSource/sonarqube-scan-action@aa494459d7c39c106cc77b166de8b4250a32bb97 # v5.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -154,7 +154,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5.3.0
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
         with:
           version: "latest"
       - name: Run zizmor 🌈
