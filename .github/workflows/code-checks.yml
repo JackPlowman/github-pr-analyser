@@ -58,7 +58,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Check Markdown links
-        uses: UmbrellaDocs/action-linkspector@v1.3.1
+        uses: UmbrellaDocs/action-linkspector@v1.3.4
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           config_file: .github/other-configurations/.linkspector.yml
@@ -82,12 +82,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.28.10
+        uses: github/codeql-action/init@v3.28.15
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.28.10
+        uses: github/codeql-action/analyze@v3.28.15
 
   check-go-format:
     name: Check Go Format
@@ -99,7 +99,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.4.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -128,7 +128,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.4.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -137,7 +137,7 @@ jobs:
       - name: Run Tests
         run: just test
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        uses: SonarSource/sonarqube-scan-action@v5.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -154,7 +154,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5.3.0
+        uses: astral-sh/setup-uv@v5.4.2
         with:
           version: "latest"
       - name: Run zizmor 🌈
@@ -162,7 +162,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3.28.10
+        uses: github/codeql-action/upload-sarif@v3.28.15
         with:
           sarif_file: results.sarif
           category: zizmor
@@ -189,7 +189,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.2.2
+        uses: astral-sh/setup-uv@aa1290542ebcd3b6932d825ed2b40807f82b2fdd # v5.2.2
         with:
           version: "latest"
       - name: Run Lefthook Validate
