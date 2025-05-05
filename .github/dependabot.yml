@@ -7,9 +7,8 @@ updates:
     commit-message:
       prefix: "deps(github-actions)"
     schedule:
-      interval: "daily"
-      time: "01:00"
-      timezone: "Europe/London"
+      interval: "cron"
+      cronjob: "30 7,12,17 * * *"
     target-branch: "main"
     groups:
       github-actions:
@@ -22,9 +21,8 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "01:00"
-      timezone: "Europe/London"
+      interval: "cron"
+      cronjob: "30 7,12,17 * * *"
     target-branch: "main"
     commit-message:
       prefix: "deps(go)"
@@ -41,9 +39,8 @@ updates:
     commit-message:
       prefix: "deps(docker)"
     schedule:
-      interval: "daily"
-      time: "01:00"
-      timezone: "Europe/London"
+      interval: "cron"
+      cronjob: "30 7,12,17 * * *"
     target-branch: "main"
     groups:
       docker:
