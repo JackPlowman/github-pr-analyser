@@ -82,12 +82,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.28.10
+        uses: github/codeql-action/init@v3.28.17
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.28.10
+        uses: github/codeql-action/analyze@v3.28.17
 
   check-go-format:
     name: Check Go Format
@@ -99,7 +99,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.5.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -128,7 +128,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.5.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -137,7 +137,7 @@ jobs:
       - name: Run Tests
         run: just test
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@aa494459d7c39c106cc77b166de8b4250a32bb97 # v5.1.0
+        uses: SonarSource/sonarqube-scan-action@2500896589ef8f7247069a56136f8dc177c27ccf # v5.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -162,7 +162,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3.28.10
+        uses: github/codeql-action/upload-sarif@v3.28.17
         with:
           sarif_file: results.sarif
           category: zizmor
