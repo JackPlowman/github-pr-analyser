@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@4e8a7c2bf106c4c766c816b35ec612638dc9b6b2 # v7.3.0
+        uses: super-linter/super-linter/slim@12150456a73e248bdc94d0794898f94e23127c88 # v7.4.0
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
@@ -39,7 +39,7 @@ jobs:
       contents: read
       pull-requests: read
       security-events: write
-    uses: JackPlowman/reusable-workflows/.github/workflows/common-code-checks.yml@14445779094fde883fdb9f65946fcae6c25f46c0 # v2025.05.14.01
+    uses: JackPlowman/reusable-workflows/.github/workflows/common-code-checks.yml@cb8bab5e91314b79b7aefabab7d1a44b1fc9f5d6 # v2025.05.17.03
     secrets:
       workflow_github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,12 +58,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.28.10
+        uses: github/codeql-action/init@v3.28.18
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.28.10
+        uses: github/codeql-action/analyze@v3.28.18
 
   check-go-format:
     name: Check Go Format
@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.5.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -104,7 +104,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v5.5.0
         with:
           go-version-file: "./go.mod"
           cache-dependency-path: "./go.sum"
@@ -113,7 +113,7 @@ jobs:
       - name: Run Tests
         run: just test
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@aa494459d7c39c106cc77b166de8b4250a32bb97 # v5.1.0
+        uses: SonarSource/sonarqube-scan-action@2500896589ef8f7247069a56136f8dc177c27ccf # v5.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
