@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context" // Added import
 	"os"
 	"strconv"
 
@@ -44,7 +45,7 @@ func AddPullRequestComment(comment string) {
 	prNumber, err := strconv.Atoi(number)
 	client := github.NewClient(nil)
 
-	_, _, err = client.Issues.CreateComment(client, owner, repo, prNumber, &github.IssueComment{
+	_, _, err = client.Issues.CreateComment(context.Background(), owner, repo, prNumber, &github.IssueComment{ // Changed client to context.Background()
 		Body: &comment,
 	})
 	if err != nil {
