@@ -2,23 +2,14 @@ package main
 
 import (
 	"os"
-<<<<<<< HEAD
-	"path/filepath"
-=======
 	"strconv"
-	"context"
->>>>>>> 72b4a8b (update)
 
+	"github.com/google/go-github/v68/github"
 	log "github.com/sirupsen/logrus"
 )
-import "github.com/google/go-github/v68/github"
+
 func main() {
 	initLogging()
-<<<<<<< HEAD
-	RunHello()
-	CreateTempFolders()
-=======
->>>>>>> 72b4a8b (update)
 	GitHubActionSummary()
 	AddPullRequestComment("Hello World")
 }
@@ -45,29 +36,7 @@ func GitHubActionSummary() {
 	}
 }
 
-<<<<<<< HEAD
-// Create a temp folder with two subfolders: one for the repo default branch and one for the commit being reviewed
-func CreateTempFolders() {
-	tempDir, err := os.MkdirTemp("", "github-pr-analyser")
-	if err != nil {
-		log.Fatal("Failed to create temp directory: ", err)
-	}
-
-	defaultBranchDir := filepath.Join(tempDir, "default-branch")
-	commitDir := filepath.Join(tempDir, "commit")
-
-	err = os.Mkdir(defaultBranchDir, 0755)
-	if err != nil {
-		log.Fatal("Failed to create default branch directory: ", err)
-	}
-
-	err = os.Mkdir(commitDir, 0755)
-	if err != nil {
-		log.Fatal("Failed to create commit directory: ", err)
-	}
-
-	log.Infof("Created temp directories: %s, %s", defaultBranchDir, commitDir)
-=======
+// AddPullRequestComment adds a comment to the pull request using GitHub API
 func AddPullRequestComment(comment string) {
 	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
 	repo := os.Getenv("GITHUB_REPOSITORY")
@@ -81,5 +50,4 @@ func AddPullRequestComment(comment string) {
 	if err != nil {
 		log.Error("Error adding comment to pull request: ", err)
 	}
->>>>>>> 72b4a8b (update)
 }
