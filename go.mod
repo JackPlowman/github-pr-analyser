@@ -1,6 +1,6 @@
 module github.com/JackPlowman/github-pr-analyser
 
-go 1.24.0
+go 1.24.3
 
 require (
 	github.com/google/go-github/v68 v68.0.1-0.20250127202340-778331087cda
