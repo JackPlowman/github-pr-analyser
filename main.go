@@ -1,17 +1,20 @@
 package main
 
 import (
+	"context"
 	"os"
-	"path/filepath"
+	"strconv"
+	"strings"
 
+	"github.com/google/go-github/v68/github"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 )
 
 func main() {
 	initLogging()
-	RunHello()
-	CreateTempFolders()
 	GitHubActionSummary()
+	AddPullRequestComment("Hello World")
 }
 
 // Init logging configuration
@@ -19,10 +22,6 @@ func initLogging() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
-}
-
-func RunHello() {
-	log.Info("Hello World")
 }
 
 // Generate GitHub Action Summary
@@ -40,25 +39,49 @@ func GitHubActionSummary() {
 	}
 }
 
-// Create a temp folder with two subfolders: one for the repo default branch and one for the commit being reviewed
-func CreateTempFolders() {
-	tempDir, err := os.MkdirTemp("", "github-pr-analyser")
-	if err != nil {
-		log.Fatal("Failed to create temp directory: ", err)
+// AddPullRequestComment adds a comment to the pull request using GitHub API
+func AddPullRequestComment(comment string) {
+	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
+	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
+	token := os.Getenv("GITHUB_TOKEN")
+
+	if owner == "" || fullRepoName == "" || prNumberStr == "" {
+		log.Error("Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, or GITHUB_PR_NUMBER")
+		return
 	}
 
-	defaultBranchDir := filepath.Join(tempDir, "default-branch")
-	commitDir := filepath.Join(tempDir, "commit")
+	repoParts := strings.Split(fullRepoName, "/")
+	if len(repoParts) != 2 {
+		log.Errorf("GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.", fullRepoName)
+		return
+	}
+	repo := repoParts[1] // Use only the repository name
 
-	err = os.Mkdir(defaultBranchDir, 0755)
+	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		log.Fatal("Failed to create default branch directory: ", err)
+		log.Errorf("Error converting GITHUB_PR_NUMBER '%s' to integer: %v", prNumberStr, err)
+		return
 	}
 
-	err = os.Mkdir(commitDir, 0755)
-	if err != nil {
-		log.Fatal("Failed to create commit directory: ", err)
+	if token == "" {
+		log.Error("GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.")
+		return
 	}
 
-	log.Infof("Created temp directories: %s, %s", defaultBranchDir, commitDir)
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc) // Use authenticated client
+
+	_, _, err = client.Issues.CreateComment(ctx, owner, repo, prNumber, &github.IssueComment{
+		Body: &comment,
+	})
+	if err != nil {
+		log.Error("Error adding comment to pull request: ", err)
+	} else {
+		log.Infof("Successfully added comment to PR #%d in %s/%s", prNumber, owner, repo)
+	}
 }
