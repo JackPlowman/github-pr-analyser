@@ -1,12 +1,14 @@
 package main
 
 import (
-	"context" // Added import
+	"context"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/google/go-github/v68/github"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 )
 
 func main() {
@@ -40,15 +42,46 @@ func GitHubActionSummary() {
 // AddPullRequestComment adds a comment to the pull request using GitHub API
 func AddPullRequestComment(comment string) {
 	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	repo := os.Getenv("GITHUB_REPOSITORY")
-	number := os.Getenv("GITHUB_PR_NUMBER")
-	prNumber, err := strconv.Atoi(number)
-	client := github.NewClient(nil)
+	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
+	token := os.Getenv("GITHUB_TOKEN")
 
-	_, _, err = client.Issues.CreateComment(context.Background(), owner, repo, prNumber, &github.IssueComment{ // Changed client to context.Background()
+	if owner == "" || fullRepoName == "" || prNumberStr == "" {
+		log.Error("Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, or GITHUB_PR_NUMBER")
+		return
+	}
+
+	repoParts := strings.Split(fullRepoName, "/")
+	if len(repoParts) != 2 {
+		log.Errorf("GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.", fullRepoName)
+		return
+	}
+	repo := repoParts[1] // Use only the repository name
+
+	prNumber, err := strconv.Atoi(prNumberStr)
+	if err != nil {
+		log.Errorf("Error converting GITHUB_PR_NUMBER '%s' to integer: %v", prNumberStr, err)
+		return
+	}
+
+	if token == "" {
+		log.Error("GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.")
+		return
+	}
+
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc) // Use authenticated client
+
+	_, _, err = client.Issues.CreateComment(ctx, owner, repo, prNumber, &github.IssueComment{
 		Body: &comment,
 	})
 	if err != nil {
 		log.Error("Error adding comment to pull request: ", err)
+	} else {
+		log.Infof("Successfully added comment to PR #%d in %s/%s", prNumber, owner, repo)
 	}
 }
