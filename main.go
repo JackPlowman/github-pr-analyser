@@ -11,7 +11,7 @@ import (
 	"github.com/google/go-github/v68/github"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
-	"github.com/JackPlowman/github-pr-analyser/git"
+	"github.com/Jackl0/github-pr-analyser/git"
 )
 
 func main() {
