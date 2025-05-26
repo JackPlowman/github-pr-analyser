@@ -28,12 +28,10 @@ func InitLogging() {
 
 // Clone a GitHub repository
 func CloneRepository() {
-	fullRepoName= os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
 	repoURL := fmt.Sprintf("https://github.com/%s.git", fullRepoName)
-	cloneDir, err := MakeTemporaryDirectory()
-	if err != nil {
-		log.Fatalf("Failed to create temporary directory: %v", err)
-	}
+	cloneDir := MakeTemporaryDirectory()
+
 
 	if repoURL == "" || cloneDir == "" {
 		log.Error("Missing required environment variables: GITHUB_REPOSITORY_URL or GITHUB_CLONE_DIR")
