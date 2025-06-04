@@ -2,6 +2,8 @@ version: 2
 
 updates:
   - package-ecosystem: "github-actions"
+    commit-message:
+      prefix: "deps(github-actions)"
     directory: "/"
     schedule:
       interval: "cron"
@@ -21,14 +23,14 @@ updates:
           - "minor"
 
   - package-ecosystem: "gomod"
+    commit-message:
+      prefix: "deps(go)"
     directory: "/"
     schedule:
       interval: "cron"
       cronjob: "30 7 * * *"
       timezone: "Europe/London"
     target-branch: "main"
-    commit-message:
-      prefix: "deps(go)"
     groups:
       go:
         applies-to: "version-updates"
@@ -39,9 +41,9 @@ updates:
           - "minor"
 
   - package-ecosystem: "docker"
-    directory: "/"
     commit-message:
       prefix: "deps(docker)"
+    directory: "/"
     schedule:
       interval: "cron"
       cronjob: "30 7 * * *"
