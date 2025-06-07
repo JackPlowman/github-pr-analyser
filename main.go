@@ -3,25 +3,30 @@ package main
 import (
 	"context"
 	"os"
+	"fmt"
+	"os/exec"
 	"strconv"
 	"strings"
 
 	"github.com/google/go-github/v68/github"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
+	"github.com/Jackl0/github-pr-analyser/git"
 )
 
 func main() {
-	initLogging()
+	InitLogging()
+	CloneRepository()
 	GitHubActionSummary()
 	AddPullRequestComment("Hello World")
 }
 
 // Init logging configuration
-func initLogging() {
+func InitLogging() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+
 }
 
 // Generate GitHub Action Summary
