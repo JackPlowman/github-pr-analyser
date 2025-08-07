@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/google/go-github/v68 v68.0.1-0.20250127202340-778331087cda
 	github.com/sirupsen/logrus v1.9.3
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.30.0
 )
 
