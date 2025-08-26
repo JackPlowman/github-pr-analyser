@@ -321,7 +321,8 @@ func AddPullRequestComment(comment string) {
 
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		zap.L().Error("Error converting INPUT_GITHUB_PR_NUMBER to integer", zap.String("prNumber", prNumberStr), zap.Error(err))
+		zap.L().
+			Error("Error converting INPUT_GITHUB_PR_NUMBER to integer", zap.String("prNumber", prNumberStr), zap.Error(err))
 		return
 	}
 
