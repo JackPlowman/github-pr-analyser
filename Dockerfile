@@ -1,4 +1,4 @@
-# trivy:ignore:AVD-DS-0002
+#trivy:ignore:AVD-DS-0002
 FROM golang:1.24.3
 
 ENV GO111MODULE="on"
