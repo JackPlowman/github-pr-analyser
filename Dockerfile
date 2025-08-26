@@ -1,5 +1,4 @@
 FROM golang:1.24.3
-#trivy:ignore:AVD-DS-0002
 
 ENV GO111MODULE="on"
 
