@@ -48,7 +48,7 @@ func generatePRFileAnalysis() string {
 
 // getPRFiles retrieves the list of changed files in the PR
 func getPRFiles() []*github.CommitFile {
-	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
+	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
 	fullRepoName := os.Getenv("GITHUB_REPOSITORY")
 	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
 	token := os.Getenv("GITHUB_TOKEN")
@@ -191,14 +191,14 @@ func formatFileStats(stats []FileStats, totalFiles int) string {
 // update PR description
 func updatePullRequestDescription(content string) {
 	// Get required environment variables
-	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
+	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
 	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
 	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
 	token := os.Getenv("GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
 		log.Error(
-			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
+			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
 		)
 		return
 	}
@@ -282,14 +282,14 @@ func GitHubActionSummary() {
 
 // AddPullRequestComment adds a comment to the pull request using GitHub API
 func AddPullRequestComment(comment string) {
-	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
-	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
-	token := os.Getenv("GITHUB_TOKEN")
+	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
+	fullRepoName := os.Getenv("INPUT_GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("INPUT_GITHUB_PR_NUMBER")
+	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" {
 		log.Error(
-			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, or GITHUB_PR_NUMBER",
+			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, INPUT_GITHUB_REPOSITORY, or INPUT_GITHUB_PR_NUMBER",
 		)
 		return
 	}
@@ -297,7 +297,7 @@ func AddPullRequestComment(comment string) {
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
 		log.Errorf(
-			"GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
+			"INPUT_GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
 			fullRepoName,
 		)
 		return
@@ -306,12 +306,12 @@ func AddPullRequestComment(comment string) {
 
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		log.Errorf("Error converting GITHUB_PR_NUMBER '%s' to integer: %v", prNumberStr, err)
+		log.Errorf("Error converting INPUT_GITHUB_PR_NUMBER '%s' to integer: %v", prNumberStr, err)
 		return
 	}
 
 	if token == "" {
-		log.Error("GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.")
+		log.Error("INPUT_GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.")
 		return
 	}
 
