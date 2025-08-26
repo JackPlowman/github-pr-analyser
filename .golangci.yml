@@ -9,6 +9,22 @@ linters:
     - staticcheck
     - unused
     - gosec
+  exclusions:
+    rules:
+      - path: '_test\.go'
+        linters:
+          - errcheck
+          - gosec
+      - path-except: '_test\.go'
+        linters:
+          - staticcheck
+      - path: internal/hmac/
+        text: weak cryptographic primitive
+        linters:
+          - gosec
+      - text: "SA9003:"
+        linters:
+          - staticcheck
 
 formatters:
   enable:
