@@ -1,8 +1,8 @@
-# GitHub PR Analyser
+# GitHub Pull Request Analyser
 
 ## Table of Contents
 
-- [GitHub PR Analyser](#github-pr-analyser)
+- [GitHub Pull Request Analyser](#github-pull-request-analyser)
   - [Table of Contents](#table-of-contents)
   - [Description](#description)
   - [Basic usage](#basic-usage)
