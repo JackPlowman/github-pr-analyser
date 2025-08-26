@@ -15,6 +15,10 @@ inputs:
   github_token:
     description: "The GitHub token"
     required: true
+  heading_level:
+    description: "The heading level for the summary"
+    required: true
+    default: "2"
 
 runs:
   using: "docker"
