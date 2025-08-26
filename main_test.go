@@ -130,8 +130,8 @@ func TestFormatFileStats(t *testing.T) {
 	assert.True(t, strings.HasSuffix(result, "```"))
 
 	// Check progress bars are present (50% = 12-13 '>' characters)
-	assert.Contains(t, result, ">>>>>>>>>>>>")  // 50% should have 12+ >
-	assert.Contains(t, result, "-------")        // Should have some -
+	assert.Contains(t, result, ">>>>>>>>>>>>") // 50% should have 12+ >
+	assert.Contains(t, result, "-------")      // Should have some -
 }
 
 // Helper function to create string pointers

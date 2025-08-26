@@ -30,8 +30,8 @@ func initLogging() {
 
 // FileStats represents statistics for a file type
 type FileStats struct {
-	Language string
-	Count    int
+	Language   string
+	Count      int
 	Percentage float64
 }
 
@@ -122,37 +122,37 @@ func getLanguageFromExtension(filename string) string {
 	ext := strings.ToLower(filepath.Ext(filename))
 
 	extensionMap := map[string]string{
-		".py":   "Python",
-		".md":   "Markdown",
-		".tex":  "TeX",
-		".html": "HTML",
-		".htm":  "HTML",
-		".js":   "JavaScript",
-		".ts":   "TypeScript",
-		".go":   "Go",
-		".java": "Java",
-		".cpp":  "C++",
-		".c":    "C",
-		".cs":   "C#",
-		".php":  "PHP",
-		".rb":   "Ruby",
-		".rs":   "Rust",
-		".sh":   "Shell",
-		".yaml": "YAML",
-		".yml":  "YAML",
-		".json": "JSON",
-		".xml":  "XML",
-		".css":  "CSS",
-		".scss": "SCSS",
-		".sass": "Sass",
-		".sql":  "SQL",
-		".r":    "R",
-		".kt":   "Kotlin",
+		".py":    "Python",
+		".md":    "Markdown",
+		".tex":   "TeX",
+		".html":  "HTML",
+		".htm":   "HTML",
+		".js":    "JavaScript",
+		".ts":    "TypeScript",
+		".go":    "Go",
+		".java":  "Java",
+		".cpp":   "C++",
+		".c":     "C",
+		".cs":    "C#",
+		".php":   "PHP",
+		".rb":    "Ruby",
+		".rs":    "Rust",
+		".sh":    "Shell",
+		".yaml":  "YAML",
+		".yml":   "YAML",
+		".json":  "JSON",
+		".xml":   "XML",
+		".css":   "CSS",
+		".scss":  "SCSS",
+		".sass":  "Sass",
+		".sql":   "SQL",
+		".r":     "R",
+		".kt":    "Kotlin",
 		".swift": "Swift",
-		".dart": "Dart",
-		".vue":  "Vue",
-		".jsx":  "JSX",
-		".tsx":  "TSX",
+		".dart":  "Dart",
+		".vue":   "Vue",
+		".jsx":   "JSX",
+		".tsx":   "TSX",
 	}
 
 	if language, exists := extensionMap[ext]; exists {
