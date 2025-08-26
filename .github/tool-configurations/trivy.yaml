@@ -16,4 +16,3 @@ vulnerability:
     - os
     - library
   ignore-unfixed: true
-ignorefile: .github/tool-configurations/.trivyignore
