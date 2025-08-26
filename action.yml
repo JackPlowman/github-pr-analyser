@@ -3,24 +3,19 @@ description: "Analyse the GitHub Pull Request"
 author: "Jack Plowman"
 
 inputs:
-  GITHUB_REPOSITORY_OWNER:
+  github_repository_owner:
     description: "The owner of the GitHub repository"
     required: true
-  GITHUB_REPOSITORY:
+  github_repository:
     description: "The name of the GitHub repository"
     required: true
-  GITHUB_PR_NUMBER:
+  github_pr_number:
     description: "The number of the GitHub Pull Request"
     required: true
-  GITHUB_TOKEN:
+  github_token:
     description: "The GitHub token"
     required: true
 
 runs:
   using: "docker"
   image: "Dockerfile"
-  env:
-    GITHUB_REPOSITORY_OWNER: ${{ inputs.GITHUB_REPOSITORY_OWNER }}
-    GITHUB_REPOSITORY: ${{ inputs.GITHUB_REPOSITORY }}
-    GITHUB_PR_NUMBER: ${{ inputs.GITHUB_PR_NUMBER }}
-    GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}

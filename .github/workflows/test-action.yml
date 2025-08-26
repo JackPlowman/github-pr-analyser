@@ -24,7 +24,7 @@ jobs:
       - name: Run Action
         uses: ./
         with:
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_PR_NUMBER: ${{ github.event.number }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          github_repository_owner: ${{ github.repository_owner }}
+          github_repository: ${{ github.repository }}
+          github_pr_number: ${{ github.event.number }}
+          github_token: ${{ secrets.GH_TOKEN }}
