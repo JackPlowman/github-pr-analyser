@@ -167,7 +167,7 @@ func formatFileStats(stats []FileStats, totalFiles int) string {
 	levelStr := os.Getenv("INPUT_HEADING_LEVEL")
 	level, err := strconv.Atoi(levelStr)
 	if err != nil {
-		log.Warn("Invalid heading level '%s', defaulting to 2", levelStr)
+		log.Warnf("Invalid heading level '%s', defaulting to 2", levelStr)
 		level = 2
 	}
 	output.WriteString(strings.Repeat("#", level) + " Pull Request Change Statistics\n\n")
