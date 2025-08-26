@@ -28,9 +28,26 @@ func initLogging() {
 func updatePullRequestDescription() {
 	// Get required environment variables
 	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	repo := os.Getenv("GITHUB_REPOSITORY_NAME")
+	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
 	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
 	token := os.Getenv("GITHUB_TOKEN")
+
+	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
+		log.Error(
+			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
+		)
+		return
+	}
+
+	repoParts := strings.Split(fullRepoName, "/")
+	if len(repoParts) != 2 {
+		log.Errorf(
+			"GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
+			fullRepoName,
+		)
+		return
+	}
+	repo := repoParts[1]
 
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
@@ -53,28 +70,35 @@ func updatePullRequestDescription() {
 		return
 	}
 
-	// Replace content inside the PR description
-	// Example: Replace everything between <!-- START --> and <!-- END -->
+	// Replace the marker line in the PR description with a string
 	body := pr.GetBody()
-	startTag := "<!-- START -->"
-	endTag := "<!-- END -->"
-	newContent := "This is the new content inside the PR description."
+	marker := "<!-- github-pr-analyser-replace-line -->"
+	replacement := "hello world" // default replacement string
 
-	startIdx := strings.Index(body, startTag)
-	endIdx := strings.Index(body, endTag)
-	if startIdx != -1 && endIdx != -1 && startIdx < endIdx {
-		updatedBody := body[:startIdx+len(startTag)] + "\n" + newContent + "\n" + body[endIdx:]
-		pr.Body = &updatedBody
-
-		_, _, err = client.PullRequests.Edit(ctx, owner, repo, prNumber, pr)
-		if err != nil {
-			log.Errorf("Failed to update PR description: %v", err)
-			return
+	// Perform line-based replacement to ensure we replace whole marker lines
+	lines := strings.Split(body, "\n")
+	replaced := false
+	for i, ln := range lines {
+		if strings.TrimSpace(ln) == marker {
+			lines[i] = replacement
+			replaced = true
 		}
-		log.Info("PR description updated successfully.")
-	} else {
-		log.Warn("Tags not found in PR description. No update performed.")
 	}
+
+	if !replaced {
+		log.Warn("Marker not found in PR description. No update performed.")
+		return
+	}
+
+	updatedBody := strings.Join(lines, "\n")
+	pr.Body = &updatedBody
+
+	_, _, err = client.PullRequests.Edit(ctx, owner, repo, prNumber, pr)
+	if err != nil {
+		log.Errorf("Failed to update PR description: %v", err)
+		return
+	}
+	log.Info("PR description updated successfully.")
 }
 
 // Generate GitHub Action Summary
