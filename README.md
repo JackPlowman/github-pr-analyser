@@ -24,7 +24,7 @@ This action provides the following functionality for GitHub Actions users:
 
 ## License
 
-The scripts and documentation in this project are released under the [MIT License](LICENSE).
+The scripts and documentation in this project are released under the [MIT Licence](LICENCE).
 
 ## Development Guide
 
@@ -32,6 +32,4 @@ See [Development Guide](docs/DEVELOPMENT_GUIDE.md).
 
 ## Contributions
 
-<!--
 Contributions are welcome! See our [Contributor's Guide](docs/contributors.md).
- -->
