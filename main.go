@@ -13,8 +13,8 @@ import (
 
 func main() {
 	initLogging()
+	updatePullRequestDescription()
 	GitHubActionSummary()
-	AddPullRequestComment("Hello World")
 }
 
 // Init logging configuration
@@ -22,6 +22,59 @@ func initLogging() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+}
+
+// update PR description
+func updatePullRequestDescription() {
+	// Get required environment variables
+	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
+	repo := os.Getenv("GITHUB_REPOSITORY_NAME")
+	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
+	token := os.Getenv("GITHUB_TOKEN")
+
+	prNumber, err := strconv.Atoi(prNumberStr)
+	if err != nil {
+		log.Errorf("Invalid PR number: %v", err)
+		return
+	}
+
+	// Setup GitHub client
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	// Get current PR
+	pr, _, err := client.PullRequests.Get(ctx, owner, repo, prNumber)
+	if err != nil {
+		log.Errorf("Failed to get PR: %v", err)
+		return
+	}
+
+	// Replace content inside the PR description
+	// Example: Replace everything between <!-- START --> and <!-- END -->
+	body := pr.GetBody()
+	startTag := "<!-- START -->"
+	endTag := "<!-- END -->"
+	newContent := "This is the new content inside the PR description."
+
+	startIdx := strings.Index(body, startTag)
+	endIdx := strings.Index(body, endTag)
+	if startIdx != -1 && endIdx != -1 && startIdx < endIdx {
+		updatedBody := body[:startIdx+len(startTag)] + "\n" + newContent + "\n" + body[endIdx:]
+		pr.Body = &updatedBody
+
+		_, _, err = client.PullRequests.Edit(ctx, owner, repo, prNumber, pr)
+		if err != nil {
+			log.Errorf("Failed to update PR description: %v", err)
+			return
+		}
+		log.Info("PR description updated successfully.")
+	} else {
+		log.Warn("Tags not found in PR description. No update performed.")
+	}
 }
 
 // Generate GitHub Action Summary
