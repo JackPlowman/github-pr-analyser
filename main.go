@@ -238,10 +238,6 @@ func updatePullRequestDescription(content string) {
 	body := pr.GetBody()
 	marker := "<!-- github-pr-analyser-replace-line -->"
 	replacement := content
-	if strings.TrimSpace(replacement) == "" {
-		// default replacement string if none provided
-		replacement = "hello world"
-	}
 
 	// Perform line-based replacement to ensure we replace whole marker lines
 	lines := strings.Split(body, "\n")
