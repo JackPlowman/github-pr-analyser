@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/go-github/v68/github"
+	"github.com/google/go-github/v74/github"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
