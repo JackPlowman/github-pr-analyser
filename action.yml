@@ -18,7 +18,7 @@ inputs:
 
 runs:
   using: "docker"
-  image: "../../../Dockerfile"
+  image: "Dockerfile"
   env:
     GITHUB_REPOSITORY_OWNER: ${{ inputs.GITHUB_REPOSITORY_OWNER }}
     GITHUB_REPOSITORY: ${{ inputs.GITHUB_REPOSITORY }}
