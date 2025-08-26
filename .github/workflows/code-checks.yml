@@ -113,3 +113,21 @@ jobs:
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - name: Run Go Vulnerability Checker
         run: just vulncheck
+
+  go-dependency-submission:
+    name: Go Dependency Submission
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Go dependencies
+        uses: ./.github/actions/setup-go-dependencies
+      - name: Run snapshot action
+        uses: actions/go-dependency-submission@f35d5c9af13ce9cc32f7930b171e315e878f6921 # v2.0.3
+        with:
+          go-mod-path: go.mod
