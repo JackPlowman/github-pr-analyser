@@ -311,7 +311,9 @@ func AddPullRequestComment(comment string) {
 	}
 
 	if token == "" {
-		log.Error("INPUT_GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.")
+		log.Error(
+			"INPUT_GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.",
+		)
 		return
 	}
 
