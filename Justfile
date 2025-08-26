@@ -3,10 +3,25 @@
 # ------------------------------------------------------------------------------
 
 build:
-    echo TODO
+    go build -o github-pr-analyser ./...
+
+run:
+    go run ./...
 
 test:
     go test -coverprofile=coverage.out ./...
+
+alias fmt := lint-fix
+alias fmt-check := lint
+
+lint:
+    golangci-lint run ./...
+
+lint-fix:
+    golangci-lint run --fix ./...
+
+vulncheck:
+    govulncheck ./...
 
 # ------------------------------------------------------------------------------
 # Go

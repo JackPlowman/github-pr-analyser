@@ -39,25 +39,6 @@ jobs:
     with:
       language: ${{ matrix.language }}
 
-  check-go-format:
-    name: Check Go Format
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Set up Go
-        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
-        with:
-          go-version-file: "./go.mod"
-          cache-dependency-path: "./go.sum"
-      - name: Set up Just
-        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3.0.0
-      - name: Check Go Format
-        run: just go-format
-
   go-vul-check:
     name: Run Go Vulnerability Check
     runs-on: ubuntu-latest
