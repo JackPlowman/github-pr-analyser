@@ -3,7 +3,7 @@ module github.com/JackPlowman/github-pr-analyser
 go 1.25.0
 
 require (
-	github.com/google/go-github/v68 v68.0.1-0.20250127202340-778331087cda
+	github.com/google/go-github/v74 v74.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/oauth2 v0.30.0
