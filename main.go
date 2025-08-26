@@ -31,7 +31,7 @@ func GitHubActionSummary() {
 		log.Info("Running in GitHub Action, Generating Summary")
 		gitHubActionSummaryFile := os.Getenv("GITHUB_STEP_SUMMARY")
 		content := []byte("# Hello World")
-		err := os.WriteFile(gitHubActionSummaryFile, content, 0600)
+		err := os.WriteFile(gitHubActionSummaryFile, content, 0o600)
 		if err != nil {
 			panic(err)
 		}
@@ -47,13 +47,18 @@ func AddPullRequestComment(comment string) {
 	token := os.Getenv("GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" {
-		log.Error("Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, or GITHUB_PR_NUMBER")
+		log.Error(
+			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, or GITHUB_PR_NUMBER",
+		)
 		return
 	}
 
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
-		log.Errorf("GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.", fullRepoName)
+		log.Errorf(
+			"GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
+			fullRepoName,
+		)
 		return
 	}
 	repo := repoParts[1] // Use only the repository name

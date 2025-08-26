@@ -16,7 +16,12 @@ func TestGitHubActionSummary(t *testing.T) {
 	// Assert
 	content, err := os.ReadFile("summary.txt")
 	assert.NoError(t, err)
-	assert.Equal(t, "# Hello World", string(content), "The content of the file should be '# Hello World'")
+	assert.Equal(
+		t,
+		"# Hello World",
+		string(content),
+		"The content of the file should be '# Hello World'",
+	)
 	// Clean up
 	defer os.Remove("summary.txt")
 	os.Unsetenv("RUNNING_IN_GITHUB_ACTION")
