@@ -49,9 +49,9 @@ func generatePRFileAnalysis() string {
 // getPRFiles retrieves the list of changed files in the PR
 func getPRFiles() []*github.CommitFile {
 	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
-	fullRepoName := os.Getenv("GITHUB_REPOSITORY")
-	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
-	token := os.Getenv("GITHUB_TOKEN")
+	fullRepoName := os.Getenv("INPUT_GITHUB_REPOSITORY")
+	prNumberStr := os.Getenv("INPUT_GITHUB_PR_NUMBER")
+	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
 		log.Error("Missing required GitHub environment variables")
