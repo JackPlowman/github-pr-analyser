@@ -1,4 +1,2 @@
 misconfigurations:
   - id: AVD-DS-0002
-    paths:
-      - "Dockerfile"
