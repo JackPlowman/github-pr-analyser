@@ -27,14 +27,14 @@ func initLogging() {
 // update PR description
 func updatePullRequestDescription() {
 	// Get required environment variables
-	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
-	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
-	token := os.Getenv("GITHUB_TOKEN")
+	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
+	fullRepoName := os.Getenv("INPUT_GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("INPUT_GITHUB_PR_NUMBER")
+	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
 		log.Error(
-			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
+			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, INPUT_GITHUB_REPOSITORY, INPUT_GITHUB_PR_NUMBER, or INPUT_GITHUB_TOKEN",
 		)
 		return
 	}

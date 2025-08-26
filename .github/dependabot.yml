@@ -6,7 +6,6 @@ updates:
       prefix: "deps(github-actions)"
     directories:
       - "/"
-      - ".github/actions/local"
       - ".github/actions/setup-go-dependencies"
     schedule:
       interval: "cron"
