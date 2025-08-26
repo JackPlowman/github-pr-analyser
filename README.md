@@ -23,7 +23,6 @@ TeX                20 files changed >>-----------------------   20 %
 HTML                9 files changed >>-----------------------   09 %
 Other               1 files changed >------------------------   01 %
 ```
-
 <!-- prettier-ignore-end -->
 
 ## Basic usage
