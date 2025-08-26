@@ -164,6 +164,13 @@ func getLanguageFromExtension(filename string) string {
 // formatFileStats formats the file statistics into markdown
 func formatFileStats(stats []FileStats, totalFiles int) string {
 	var output strings.Builder
+	levelStr := os.Getenv("INPUT_HEADING_LEVEL")
+	level, err := strconv.Atoi(levelStr)
+	if err != nil {
+		log.Warnf("Invalid heading level '%s', defaulting to 2", levelStr)
+		level = 2
+	}
+	output.WriteString(strings.Repeat("#", level) + " Pull Request Change Statistics\n\n")
 	output.WriteString("```markdown\n")
 	output.WriteString(fmt.Sprintf("Files changed: %d\n\n", totalFiles))
 

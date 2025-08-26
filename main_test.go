@@ -126,7 +126,7 @@ func TestFormatFileStats(t *testing.T) {
 	assert.Contains(t, result, "20 %")
 
 	// Check that it's wrapped in markdown code block
-	assert.True(t, strings.HasPrefix(result, "```markdown\n"))
+	assert.True(t, strings.HasPrefix(result, "## Pull Request Change Statistics\n\n```markdown\n"))
 	assert.True(t, strings.HasSuffix(result, "```"))
 
 	// Check progress bars are present (50% = 12-13 '>' characters)
