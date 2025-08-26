@@ -114,6 +114,20 @@ jobs:
       - name: Run Go Vulnerability Checker
         run: just vulncheck
 
+  go-build:
+    name: Go Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Go dependencies
+        uses: ./.github/actions/setup-go-dependencies
+      - name: Build
+        run: just build
+
   go-dependency-submission:
     name: Go Dependency Submission
     runs-on: ubuntu-latest
