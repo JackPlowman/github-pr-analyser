@@ -10,22 +10,30 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v74/github"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
 
 func main() {
-	initLogging()
 	content := generatePRFileAnalysis()
 	updatePullRequestDescription(content)
 	GitHubActionSummary()
 }
 
-// Init logging configuration
-func initLogging() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp: true,
-	})
+// initialize global logger
+func init() {
+	logger, err := initLogger()
+	zap.ReplaceGlobals(zap.Must(logger, err))
+}
+
+// initLogger initializes and returns a zap logger according to the
+// DEBUG environment variable. If DEBUG=="true" a development logger
+// will be returned, otherwise a production logger is used.
+func initLogger() (*zap.Logger, error) {
+	if os.Getenv("INPUT_DEBUG") == "true" {
+		return zap.NewDevelopment()
+	}
+	return zap.NewProduction()
 }
 
 // FileStats represents statistics for a file type
@@ -54,20 +62,20 @@ func getPRFiles() []*github.CommitFile {
 	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
-		log.Error("Missing required GitHub environment variables")
+		zap.L().Error("Missing required GitHub environment variables")
 		return nil
 	}
 
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
-		log.Error("Invalid GITHUB_REPOSITORY format")
+		zap.L().Error("Invalid GITHUB_REPOSITORY format")
 		return nil
 	}
 
 	repo := repoParts[1]
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		log.Errorf("Invalid PR number: %v", err)
+		zap.L().Error("Invalid PR number", zap.Error(err))
 		return nil
 	}
 
@@ -79,7 +87,7 @@ func getPRFiles() []*github.CommitFile {
 	// Get PR files
 	files, _, err := client.PullRequests.ListFiles(ctx, owner, repo, prNumber, nil)
 	if err != nil {
-		log.Errorf("Failed to get PR files: %v", err)
+		zap.L().Error("Failed to get PR files", zap.Error(err))
 		return nil
 	}
 
@@ -167,7 +175,7 @@ func formatFileStats(stats []FileStats, totalFiles int) string {
 	levelStr := os.Getenv("INPUT_HEADING_LEVEL")
 	level, err := strconv.Atoi(levelStr)
 	if err != nil {
-		log.Warnf("Invalid heading level '%s', defaulting to 2", levelStr)
+		zap.L().Warn("Invalid heading level, defaulting to 2", zap.String("level", levelStr))
 		level = 2
 	}
 	output.WriteString(strings.Repeat("#", level) + " Pull Request Change Statistics\n\n")
@@ -204,7 +212,7 @@ func updatePullRequestDescription(content string) {
 	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
-		log.Error(
+		zap.L().Error(
 			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, INPUT_GITHUB_REPOSITORY, INPUT_GITHUB_PR_NUMBER, or INPUT_GITHUB_TOKEN",
 		)
 		return
@@ -212,9 +220,9 @@ func updatePullRequestDescription(content string) {
 
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
-		log.Errorf(
-			"INPUT_GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
-			fullRepoName,
+		zap.L().Error(
+			"INPUT_GITHUB_REPOSITORY environment variable is not in the expected 'owner/repo' format",
+			zap.String("repository", fullRepoName),
 		)
 		return
 	}
@@ -222,7 +230,7 @@ func updatePullRequestDescription(content string) {
 
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		log.Errorf("Invalid PR number: %v", err)
+		zap.L().Error("Invalid PR number", zap.Error(err))
 		return
 	}
 
@@ -237,7 +245,7 @@ func updatePullRequestDescription(content string) {
 	// Get current PR
 	pr, _, err := client.PullRequests.Get(ctx, owner, repo, prNumber)
 	if err != nil {
-		log.Errorf("Failed to get PR: %v", err)
+		zap.L().Error("Failed to get PR", zap.Error(err))
 		return
 	}
 
@@ -257,7 +265,7 @@ func updatePullRequestDescription(content string) {
 	}
 
 	if !replaced {
-		log.Warn("Marker not found in PR description. No update performed.")
+		zap.L().Warn("Marker not found in PR description. No update performed.")
 		return
 	}
 
@@ -266,24 +274,24 @@ func updatePullRequestDescription(content string) {
 
 	_, _, err = client.PullRequests.Edit(ctx, owner, repo, prNumber, pr)
 	if err != nil {
-		log.Errorf("Failed to update PR description: %v", err)
+		zap.L().Error("Failed to update PR description", zap.Error(err))
 		return
 	}
-	log.Info("PR description updated successfully.")
+	zap.L().Info("PR description updated successfully.")
 }
 
 // Generate GitHub Action Summary
 func GitHubActionSummary() {
 	action := os.Getenv("RUNNING_IN_GITHUB_ACTION")
 	if action == "true" {
-		log.Info("Running in GitHub Action, Generating Summary")
+		zap.L().Info("Running in GitHub Action, Generating Summary")
 		gitHubActionSummaryFile := os.Getenv("GITHUB_STEP_SUMMARY")
 		content := []byte("# Hello World")
 		err := os.WriteFile(gitHubActionSummaryFile, content, 0o600)
 		if err != nil {
 			panic(err)
 		}
-		log.Info("Summary Generated")
+		zap.L().Info("Summary Generated")
 	}
 }
 
@@ -295,7 +303,7 @@ func AddPullRequestComment(comment string) {
 	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" {
-		log.Error(
+		zap.L().Error(
 			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, INPUT_GITHUB_REPOSITORY, or INPUT_GITHUB_PR_NUMBER",
 		)
 		return
@@ -303,9 +311,9 @@ func AddPullRequestComment(comment string) {
 
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
-		log.Errorf(
-			"INPUT_GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
-			fullRepoName,
+		zap.L().Error(
+			"INPUT_GITHUB_REPOSITORY environment variable is not in the expected 'owner/repo' format",
+			zap.String("repository", fullRepoName),
 		)
 		return
 	}
@@ -313,12 +321,13 @@ func AddPullRequestComment(comment string) {
 
 	prNumber, err := strconv.Atoi(prNumberStr)
 	if err != nil {
-		log.Errorf("Error converting INPUT_GITHUB_PR_NUMBER '%s' to integer: %v", prNumberStr, err)
+		zap.L().
+			Error("Error converting INPUT_GITHUB_PR_NUMBER to integer", zap.String("prNumber", prNumberStr), zap.Error(err))
 		return
 	}
 
 	if token == "" {
-		log.Error(
+		zap.L().Error(
 			"INPUT_GITHUB_TOKEN environment variable is not set. Cannot authenticate to GitHub.",
 		)
 		return
@@ -335,8 +344,8 @@ func AddPullRequestComment(comment string) {
 		Body: &comment,
 	})
 	if err != nil {
-		log.Error("Error adding comment to pull request: ", err)
+		zap.L().Error("Error adding comment to pull request", zap.Error(err))
 	} else {
-		log.Infof("Successfully added comment to PR #%d in %s/%s", prNumber, owner, repo)
+		zap.L().Info("Successfully added comment to PR", zap.Int("prNumber", prNumber), zap.String("owner", owner), zap.String("repo", repo))
 	}
 }
