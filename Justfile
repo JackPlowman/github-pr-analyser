@@ -2,52 +2,36 @@
 # General
 # ------------------------------------------------------------------------------
 
+export SRC_DIR := "./src"
+export SRC_RECURSIVE := "./src/..."
+
 build:
-    go build -o github-pr-analyser ./...
+    go build -o github-pr-analyser ${SRC_DIR}
 
 run:
-    go run ./...
-
-test:
-    go test -coverprofile=coverage.out ./...
+    go run ${SRC_DIR}
 
 alias fmt := lint-fix
 alias fmt-check := lint
 
 lint:
-    golangci-lint run ./...
+    golangci-lint run ${SRC_RECURSIVE}
 
 lint-fix:
-    golangci-lint run --fix ./...
+    golangci-lint run --fix ${SRC_RECURSIVE}
 
 vulncheck:
-    govulncheck ./...
+    govulncheck ${SRC_RECURSIVE}
+
+test:
+    go test -coverprofile=coverage.out ${SRC_RECURSIVE}
 
 # ------------------------------------------------------------------------------
-# Go
+# Docker
 # ------------------------------------------------------------------------------
 
-go-format:
-    go fmt ./...
-
-go-staticcheck:
-    go staticcheck ./...
-
-go-vet:
-    go vet ./...
-
-# ------------------------------------------------------------------------------
-# Docker Commands
-# ------------------------------------------------------------------------------
-
-# Build the Docker image
 docker-build:
-    docker build -t jackplowman/github-pr-analyser:latest .
-
-# Run the analyser in a Docker container, used for testing the github action docker image
-docker-run:
-    docker run \
-      --rm jackplowman/github-pr-analyser:latest
+    docker buildx build -t github-pr-analyser:latest .
 
 # ------------------------------------------------------------------------------
 # Prettier
