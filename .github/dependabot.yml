@@ -4,7 +4,10 @@ updates:
   - package-ecosystem: "github-actions"
     commit-message:
       prefix: "deps(github-actions)"
-    directory: "/"
+    directories:
+      - "/"
+      - ".github/actions/local"
+      - ".github/actions/setup-go-dependencies"
     schedule:
       interval: "cron"
       cronjob: "30 7 * * *"
