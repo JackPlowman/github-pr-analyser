@@ -13,8 +13,8 @@ import (
 
 func main() {
 	initLogging()
+	updatePullRequestDescription()
 	GitHubActionSummary()
-	AddPullRequestComment("Hello World")
 }
 
 // Init logging configuration
@@ -22,6 +22,83 @@ func initLogging() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+}
+
+// update PR description
+func updatePullRequestDescription() {
+	// Get required environment variables
+	owner := os.Getenv("GITHUB_REPOSITORY_OWNER")
+	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
+	token := os.Getenv("GITHUB_TOKEN")
+
+	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
+		log.Error(
+			"Missing required GitHub environment variables: GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
+		)
+		return
+	}
+
+	repoParts := strings.Split(fullRepoName, "/")
+	if len(repoParts) != 2 {
+		log.Errorf(
+			"GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
+			fullRepoName,
+		)
+		return
+	}
+	repo := repoParts[1]
+
+	prNumber, err := strconv.Atoi(prNumberStr)
+	if err != nil {
+		log.Errorf("Invalid PR number: %v", err)
+		return
+	}
+
+	// Setup GitHub client
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	// Get current PR
+	pr, _, err := client.PullRequests.Get(ctx, owner, repo, prNumber)
+	if err != nil {
+		log.Errorf("Failed to get PR: %v", err)
+		return
+	}
+
+	// Replace the marker line in the PR description with a string
+	body := pr.GetBody()
+	marker := "<!-- github-pr-analyser-replace-line -->"
+	replacement := "hello world" // default replacement string
+
+	// Perform line-based replacement to ensure we replace whole marker lines
+	lines := strings.Split(body, "\n")
+	replaced := false
+	for i, ln := range lines {
+		if strings.TrimSpace(ln) == marker {
+			lines[i] = replacement
+			replaced = true
+		}
+	}
+
+	if !replaced {
+		log.Warn("Marker not found in PR description. No update performed.")
+		return
+	}
+
+	updatedBody := strings.Join(lines, "\n")
+	pr.Body = &updatedBody
+
+	_, _, err = client.PullRequests.Edit(ctx, owner, repo, prNumber, pr)
+	if err != nil {
+		log.Errorf("Failed to update PR description: %v", err)
+		return
+	}
+	log.Info("PR description updated successfully.")
 }
 
 // Generate GitHub Action Summary
