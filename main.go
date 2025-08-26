@@ -192,13 +192,13 @@ func formatFileStats(stats []FileStats, totalFiles int) string {
 func updatePullRequestDescription(content string) {
 	// Get required environment variables
 	owner := os.Getenv("INPUT_GITHUB_REPOSITORY_OWNER")
-	fullRepoName := os.Getenv("GITHUB_REPOSITORY") // Expected format: "owner/repo"
-	prNumberStr := os.Getenv("GITHUB_PR_NUMBER")
-	token := os.Getenv("GITHUB_TOKEN")
+	fullRepoName := os.Getenv("INPUT_GITHUB_REPOSITORY") // Expected format: "owner/repo"
+	prNumberStr := os.Getenv("INPUT_GITHUB_PR_NUMBER")
+	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	if owner == "" || fullRepoName == "" || prNumberStr == "" || token == "" {
 		log.Error(
-			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY, GITHUB_PR_NUMBER, or GITHUB_TOKEN",
+			"Missing required GitHub environment variables: INPUT_GITHUB_REPOSITORY_OWNER, INPUT_GITHUB_REPOSITORY, INPUT_GITHUB_PR_NUMBER, or INPUT_GITHUB_TOKEN",
 		)
 		return
 	}
@@ -206,7 +206,7 @@ func updatePullRequestDescription(content string) {
 	repoParts := strings.Split(fullRepoName, "/")
 	if len(repoParts) != 2 {
 		log.Errorf(
-			"GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
+			"INPUT_GITHUB_REPOSITORY environment variable (%s) is not in the expected 'owner/repo' format.",
 			fullRepoName,
 		)
 		return
