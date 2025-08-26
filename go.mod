@@ -1,7 +1,5 @@
 module github.com/JackPlowman/github-pr-analyser
 
-include ./src
-
 go 1.25.0
 
 require (
