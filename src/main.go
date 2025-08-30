@@ -107,7 +107,8 @@ func analyseFileTypes(files []*github.CommitFile) []FileStats {
 		if language == "" {
 			language = "Unknown"
 		}
-		zap.L().Debug("File analysed", zap.String("filename", *file.Filename), zap.String("language", language))
+		zap.L().
+			Debug("File analysed", zap.String("filename", *file.Filename), zap.String("language", language))
 		languageMap[language]++
 	}
 
