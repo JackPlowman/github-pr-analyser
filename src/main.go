@@ -50,7 +50,7 @@ func generatePRFileAnalysis() string {
 		return "```markdown\nNo files changed in this PR.\n```"
 	}
 
-	stats := analyzeFileTypes(files)
+	stats := analyseFileTypes(files)
 	return formatFileStats(stats, len(files))
 }
 
@@ -94,8 +94,8 @@ func getPRFiles() []*github.CommitFile {
 	return files
 }
 
-// analyzeFileTypes analyzes file types and returns statistics
-func analyzeFileTypes(files []*github.CommitFile) []FileStats {
+// analyseFileTypes analyses file types and returns statistics
+func analyseFileTypes(files []*github.CommitFile) []FileStats {
 	languageMap := make(map[string]int)
 	totalFiles := len(files)
 
@@ -104,7 +104,10 @@ func analyzeFileTypes(files []*github.CommitFile) []FileStats {
 			continue
 		}
 		language, _ := enry.GetLanguageByExtension(*file.Filename)
-		zap.L().Debug("File analyzed", zap.String("filename", *file.Filename), zap.String("language", language))
+		if language == "" {
+			language = "unknown"
+		}
+		zap.L().Debug("File analysed", zap.String("filename", *file.Filename), zap.String("language", language))
 		languageMap[language]++
 	}
 
