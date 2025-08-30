@@ -104,7 +104,7 @@ func analyzeFileTypes(files []*github.CommitFile) []FileStats {
 			continue
 		}
 		language, _ := enry.GetLanguageByExtension(*file.Filename)
-		zap.L().Debug("File analyzed", zap.String("filename", *file.Filename), zap.String("language", language), zap.Error(err))
+		zap.L().Debug("File analyzed", zap.String("filename", *file.Filename), zap.String("language", language))
 		languageMap[language]++
 	}
 
