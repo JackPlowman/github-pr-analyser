@@ -47,7 +47,7 @@ func TestAnalyseFileTypes(t *testing.T) {
 
 	stats := analyseFileTypes(files)
 
-	// Verify results - should have 6 unique languages: Python, Markdown, CSS, JavaScript, JSON, Other
+	// Verify results - should have 6 unique languages: Python, Markdown, CSS, JavaScript, JSON, Unknown
 	assert.Len(t, stats, 6)
 
 	// Find Python stats (should be first due to sorting by count)
@@ -56,17 +56,17 @@ func TestAnalyseFileTypes(t *testing.T) {
 	assert.Equal(t, 3, pythonStats.Count)
 	assert.Equal(t, float64(30), pythonStats.Percentage)
 
-	// Find Other stats
-	var otherStats FileStats
+	// Find Unknown stats
+	var unknownStats FileStats
 	for _, stat := range stats {
-		if stat.Language == "Other" {
-			otherStats = stat
+		if stat.Language == "Unknown" {
+			unknownStats = stat
 			break
 		}
 	}
-	assert.Equal(t, "Other", otherStats.Language)
-	assert.Equal(t, 2, otherStats.Count)
-	assert.Equal(t, float64(20), otherStats.Percentage)
+	assert.Equal(t, "Unknown", unknownStats.Language)
+	assert.Equal(t, 2, unknownStats.Count)
+	assert.Equal(t, float64(20), unknownStats.Percentage)
 }
 
 func TestFormatFileStats(t *testing.T) {
