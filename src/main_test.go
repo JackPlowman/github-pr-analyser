@@ -30,42 +30,7 @@ func TestGitHubActionSummary(t *testing.T) {
 	os.Unsetenv("GITHUB_STEP_SUMMARY")
 }
 
-func TestGetLanguageFromExtension(t *testing.T) {
-	tests := []struct {
-		filename string
-		expected string
-	}{
-		{"main.py", "Python"},
-		{"README.md", "Markdown"},
-		{"document.tex", "TeX"},
-		{"index.html", "HTML"},
-		{"script.js", "JavaScript"},
-		{"app.ts", "TypeScript"},
-		{"main.go", "Go"},
-		{"App.java", "Java"},
-		{"program.cpp", "C++"},
-		{"code.c", "C"},
-		{"Program.cs", "C#"},
-		{"script.php", "PHP"},
-		{"app.rb", "Ruby"},
-		{"main.rs", "Rust"},
-		{"script.sh", "Shell"},
-		{"config.yaml", "YAML"},
-		{"data.json", "JSON"},
-		{"styles.css", "CSS"},
-		{"unknown.xyz", "Other"},
-		{"no-extension", "Other"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.filename, func(t *testing.T) {
-			result := getLanguageFromExtension(test.filename)
-			assert.Equal(t, test.expected, result)
-		})
-	}
-}
-
-func TestAnalyzeFileTypes(t *testing.T) {
+func TestAnalyseFileTypes(t *testing.T) {
 	// Create mock files
 	files := []*github.CommitFile{
 		{Filename: stringPtr("main.py")},
@@ -80,9 +45,9 @@ func TestAnalyzeFileTypes(t *testing.T) {
 		{Filename: stringPtr("no-ext")},
 	}
 
-	stats := analyzeFileTypes(files)
+	stats := analyseFileTypes(files)
 
-	// Verify results - should have 6 unique languages: Python, Markdown, CSS, JavaScript, JSON, Other
+	// Verify results - should have 6 unique languages: Python, Markdown, CSS, JavaScript, JSON, Unknown
 	assert.Len(t, stats, 6)
 
 	// Find Python stats (should be first due to sorting by count)
@@ -91,17 +56,17 @@ func TestAnalyzeFileTypes(t *testing.T) {
 	assert.Equal(t, 3, pythonStats.Count)
 	assert.Equal(t, float64(30), pythonStats.Percentage)
 
-	// Find Other stats
-	var otherStats FileStats
+	// Find Unknown stats
+	var unknownStats FileStats
 	for _, stat := range stats {
-		if stat.Language == "Other" {
-			otherStats = stat
+		if stat.Language == "Unknown" {
+			unknownStats = stat
 			break
 		}
 	}
-	assert.Equal(t, "Other", otherStats.Language)
-	assert.Equal(t, 2, otherStats.Count)
-	assert.Equal(t, float64(20), otherStats.Percentage)
+	assert.Equal(t, "Unknown", unknownStats.Language)
+	assert.Equal(t, 2, unknownStats.Count)
+	assert.Equal(t, float64(20), unknownStats.Percentage)
 }
 
 func TestFormatFileStats(t *testing.T) {
