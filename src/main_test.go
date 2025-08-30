@@ -30,42 +30,7 @@ func TestGitHubActionSummary(t *testing.T) {
 	os.Unsetenv("GITHUB_STEP_SUMMARY")
 }
 
-func TestGetLanguageFromExtension(t *testing.T) {
-	tests := []struct {
-		filename string
-		expected string
-	}{
-		{"main.py", "Python"},
-		{"README.md", "Markdown"},
-		{"document.tex", "TeX"},
-		{"index.html", "HTML"},
-		{"script.js", "JavaScript"},
-		{"app.ts", "TypeScript"},
-		{"main.go", "Go"},
-		{"App.java", "Java"},
-		{"program.cpp", "C++"},
-		{"code.c", "C"},
-		{"Program.cs", "C#"},
-		{"script.php", "PHP"},
-		{"app.rb", "Ruby"},
-		{"main.rs", "Rust"},
-		{"script.sh", "Shell"},
-		{"config.yaml", "YAML"},
-		{"data.json", "JSON"},
-		{"styles.css", "CSS"},
-		{"unknown.xyz", "Other"},
-		{"no-extension", "Other"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.filename, func(t *testing.T) {
-			result := getLanguageFromExtension(test.filename)
-			assert.Equal(t, test.expected, result)
-		})
-	}
-}
-
-func TestAnalyzeFileTypes(t *testing.T) {
+func TestAnalyseFileTypes(t *testing.T) {
 	// Create mock files
 	files := []*github.CommitFile{
 		{Filename: stringPtr("main.py")},
@@ -80,7 +45,7 @@ func TestAnalyzeFileTypes(t *testing.T) {
 		{Filename: stringPtr("no-ext")},
 	}
 
-	stats := analyzeFileTypes(files)
+	stats := analyseFileTypes(files)
 
 	// Verify results - should have 6 unique languages: Python, Markdown, CSS, JavaScript, JSON, Other
 	assert.Len(t, stats, 6)
