@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
 
+	"github.com/go-enry/go-enry/v2"
 	"github.com/google/go-github/v74/github"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
@@ -103,7 +103,8 @@ func analyzeFileTypes(files []*github.CommitFile) []FileStats {
 		if file.Filename == nil {
 			continue
 		}
-		language := getLanguageFromExtension(*file.Filename)
+		language, _ := enry.GetLanguageByExtension(*file.Filename)
+		zap.L().Debug("File analyzed", zap.String("filename", *file.Filename), zap.String("language", language), zap.Error(err))
 		languageMap[language]++
 	}
 
@@ -123,50 +124,6 @@ func analyzeFileTypes(files []*github.CommitFile) []FileStats {
 	})
 
 	return stats
-}
-
-// getLanguageFromExtension maps file extensions to language names
-func getLanguageFromExtension(filename string) string {
-	ext := strings.ToLower(filepath.Ext(filename))
-
-	extensionMap := map[string]string{
-		".py":    "Python",
-		".md":    "Markdown",
-		".tex":   "TeX",
-		".html":  "HTML",
-		".htm":   "HTML",
-		".js":    "JavaScript",
-		".ts":    "TypeScript",
-		".go":    "Go",
-		".java":  "Java",
-		".cpp":   "C++",
-		".c":     "C",
-		".cs":    "C#",
-		".php":   "PHP",
-		".rb":    "Ruby",
-		".rs":    "Rust",
-		".sh":    "Shell",
-		".yaml":  "YAML",
-		".yml":   "YAML",
-		".json":  "JSON",
-		".xml":   "XML",
-		".css":   "CSS",
-		".scss":  "SCSS",
-		".sass":  "Sass",
-		".sql":   "SQL",
-		".r":     "R",
-		".kt":    "Kotlin",
-		".swift": "Swift",
-		".dart":  "Dart",
-		".vue":   "Vue",
-		".jsx":   "JSX",
-		".tsx":   "TSX",
-	}
-
-	if language, exists := extensionMap[ext]; exists {
-		return language
-	}
-	return "Other"
 }
 
 // formatFileStats formats the file statistics into markdown
