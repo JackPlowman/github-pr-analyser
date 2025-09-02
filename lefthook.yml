@@ -20,3 +20,7 @@ pre-commit:
       run: just zizmor-check
     Pinact Check:
       run: just pinact-check
+    Go Lint Check:
+      run: just lint
+    Go Vulnerability Check:
+      run: just vulncheck
