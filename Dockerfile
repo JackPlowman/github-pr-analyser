@@ -1,4 +1,4 @@
-FROM golang:1.25.0-alpine AS builder
+FROM golang:1.25.5-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /bin/github-pr-analyser ./src
 
-FROM alpine:3.22 AS runner
+FROM alpine:3.23 AS runner
 
 RUN adduser -D -H -u 10001 appuser
 
