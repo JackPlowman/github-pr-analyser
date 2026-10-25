@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-enry/go-enry/v2"
-	"github.com/google/go-github/v74/github"
+	"github.com/google/go-github/v93/github"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
@@ -82,7 +82,11 @@ func getPRFiles() []*github.CommitFile {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
+	client, err := github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		zap.L().Error("Failed to initialize GitHub client", zap.Error(err))
+		return nil
+	}
 
 	// Get PR files
 	files, _, err := client.PullRequests.ListFiles(ctx, owner, repo, prNumber, nil)
@@ -201,7 +205,11 @@ func updatePullRequestDescription(content string) {
 		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
+	client, err := github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		zap.L().Error("Failed to initialize GitHub client", zap.Error(err))
+		return
+	}
 
 	// Get current PR
 	pr, _, err := client.PullRequests.Get(ctx, owner, repo, prNumber)
@@ -248,7 +256,12 @@ func GitHubActionSummary() {
 		zap.L().Info("Running in GitHub Action, Generating Summary")
 		gitHubActionSummaryFile := os.Getenv("GITHUB_STEP_SUMMARY")
 		content := []byte("# Hello World")
-		err := os.WriteFile(gitHubActionSummaryFile, content, 0o600)
+		// GITHUB_STEP_SUMMARY is a trusted output path supplied by the GitHub runner.
+		err := os.WriteFile(
+			gitHubActionSummaryFile,
+			content,
+			0o600,
+		) // #nosec G703 -- runner-controlled path
 		if err != nil {
 			panic(err)
 		}
@@ -299,14 +312,19 @@ func AddPullRequestComment(comment string) {
 		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc) // Use authenticated client
+	client, err := github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		zap.L().Error("Failed to initialize GitHub client", zap.Error(err))
+		return
+	}
 
-	_, _, err = client.Issues.CreateComment(ctx, owner, repo, prNumber, &github.IssueComment{
-		Body: &comment,
+	_, _, err = client.Issues.CreateComment(ctx, owner, repo, prNumber, github.IssueCommentRequest{
+		Body: comment,
 	})
 	if err != nil {
 		zap.L().Error("Error adding comment to pull request", zap.Error(err))
 	} else {
-		zap.L().Info("Successfully added comment to PR", zap.Int("prNumber", prNumber), zap.String("owner", owner), zap.String("repo", repo))
+		zap.L().
+			Info("Successfully added comment to PR", zap.Int("prNumber", prNumber), zap.String("owner", owner), zap.String("repo", repo))
 	}
 }
