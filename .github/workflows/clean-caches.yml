@@ -5,14 +5,20 @@ on:
     - cron: "0 0 1 * *"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions: {}
 
 jobs:
   clean-caches:
     name: Clean Caches
     permissions:
-      contents: read
-      actions: write
-    uses: JackPlowman/reusable-workflows/.github/workflows/common-clean-caches.yml@f82d61d53648ae90f8a0406c0f4bbf1aef332337 # v2026.10.25.01
-    secrets:
-      workflow_github_token: ${{ secrets.GITHUB_TOKEN }}
+      actions: write # Delete repository Actions caches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete caches
+        run: gh cache delete --all --succeed-on-no-caches --repo "$GITHUB_REPOSITORY"
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -79,7 +79,7 @@ prek-check:
 
 # Run zizmor checking
 zizmor-check:
-    uvx zizmor . --persona=auditor
+    uvx zizmor==1.31.1 . --persona=auditor
 
 # ------------------------------------------------------------------------------
 # Pinact
