@@ -9,22 +9,30 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions: {}
 
 jobs:
   test-action:
     name: Test Action
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write # Publish PR annotations and labels
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
       - name: Run Action
-        uses: ./
+        uses: $/
         with:
           github_repository_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           github_pr_number: ${{ github.event.number }}
-          github_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

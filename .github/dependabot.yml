@@ -2,6 +2,8 @@ version: 2
 
 updates:
   - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(github-actions)"
     directories:
@@ -24,6 +26,8 @@ updates:
           - "minor"
 
   - package-ecosystem: "gomod"
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(go)"
     directory: "/"
@@ -42,6 +46,8 @@ updates:
           - "minor"
 
   - package-ecosystem: "docker"
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(docker)"
     directory: "/"
